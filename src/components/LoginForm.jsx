@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Install axios if you're making API calls
-import { useNavigate ,Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { authHeader } from './authheader';
+
 const LoginForm = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -17,71 +19,106 @@ const LoginForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   
 
-    console.log(formData); // ✅ You can remove this in production
-
-    
-    axios.post('http://localhost:8081/api/auth/signin', formData)
+    axios.post('http://localhost:8081/api/auth/signin', formData, authHeader())
       .then(response => {
-        const token = response.data.jwtToken; // ✅ Assuming your backend returns { token: '...' }
+        const token = response.data.jwtToken;
         const user = response.data.userDto;
-        // ✅ Save token to localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("userId", user.id);
-      
-        console.log(response);
         alert('Login successful!');
-
-        // ✅ Redirect to dashboard
         navigate('/seller');
       })
       .catch(error => {
-        alert("wrong Creadentials");
+        alert("Wrong credentials");
         console.error('Login failed:', error);
-        alert('Invalid credentials.');
       });
   };
 
   return (
-    <div style={{ width: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-      <h2 style={{ textAlign: 'center' }}>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email">Email</label>
-          <input
-            type="username"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
-        </div>
+    <div style={styles.background}>
+      <div style={styles.blurCard}>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Login to Propertijo</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={styles.formGroup}>
+            <label htmlFor="username">Email</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+              style={styles.input}
+            />
+          </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
-        </div>
+          <div style={styles.formGroup}>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              required
+              style={styles.input}
+            />
+          </div>
 
-        <button block type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px' }}>
-          Login
-        </button>
-        <Link to="/SignUp">SignUp</Link>
-      </form>
+          <button type="submit" style={styles.button}>Login</button>
+          <p style={{ textAlign: 'center', marginTop: '10px' }}>
+            New here? <Link to="/SignUp" style={{ color: '#007bff' }}>Sign Up</Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
+};
+
+
+const styles = {
+  background: {
+    backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    height: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  blurCard: {
+    backdropFilter: 'blur(15px)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: '16px',
+    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+    width: '400px',
+    padding: '30px',
+    color: '#fff',
+    border: '1px solid rgba(255, 255, 255, 0.18)',
+  },
+  formGroup: {
+    marginBottom: '15px',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    marginTop: '5px',
+  },
+  button: {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    marginTop: '10px',
+    fontWeight: 'bold',
+  },
 };
 
 export default LoginForm;

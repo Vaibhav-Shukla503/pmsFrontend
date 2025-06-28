@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { authHeader } from "./authheader";
 import {
   Container,
   Row,
@@ -37,7 +38,7 @@ const FileUpload = () => {
       const response = await axios.post("http://localhost:8081/api/files/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          // Authorization: `Bearer ${token}` // if needed
+           ...authHeader().headers,
         },
       });
       setMessage(`✅ ${response.data}`);

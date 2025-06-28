@@ -3,6 +3,8 @@ import LoginForm from './components/LoginForm';
 import SignUp from './components/signup';
 import Seller from './components/Seller';
 import FileUpload from './components/FileUpload';
+import Logout from './components/Logout';
+
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/seller/*" element={<Seller />} />
       <Route path="/fileupload" element={<FileUpload />} />
+      <Route path='/Logout' element={<Logout />} />
     </Routes>
     </BrowserRouter>
   );
